@@ -65,7 +65,7 @@ if ($value['collapsible']) {
 	else {
 	$collapsible = "";	
 	if($value['popup'] == 1) {
-			$link = "href=\"#\" onClick=\"MM_openBrWindow('?type=".$value['type']."','','width=700,height=700')\"";
+			$link = "href=\"#\" onClick=\"MM_openBrWindow('?type=".$value['type']."','','width=700,height=700,screenX=50,resizable=yes')\"";
 		} else {
 			$link = 'href="?type='.$value['type'].'"';
 		}

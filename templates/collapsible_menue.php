@@ -22,7 +22,7 @@ unset($items[$key ]);
 			else {
 			$collapsible = "";	
 			if($current['popup'] == 1) {
-					$link = "href=\"#\" onClick=\"MM_openBrWindow('?type=".$current['type']."','','width=800,height=900')\"";
+					$link = "href=\"#\" onClick=\"MM_openBrWindow('?type=".$current['type']."','','width=800,height=900,screenX=200,resizable=yes')\"";
 				} else {
 					$link = 'href="?type='.$current['type'].'"';
 				}

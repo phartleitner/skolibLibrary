@@ -135,7 +135,7 @@ class Model {
 	*/
 	public function checkAccessRight($type,$right) {
 		//the following array contains all types which the navigation table does not contain
-		$freeAccess = array("newitem","uschoose","usstart","editprofile","print","scan");
+		$freeAccess = array("newitem","uschoose","usstart","editprofile","print","scan","reminder");
 		$access = false;
 		if (in_array($type,$freeAccess) ) {
 			$access = true;

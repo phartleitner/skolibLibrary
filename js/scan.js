@@ -358,7 +358,8 @@ $('#item-history').hide();
 * @param string action
 * @param int itemId
 */
-function performCustomAction(barcode,action,data = null) {
+function performCustomAction(barcode,action,data ) {
+if (null == data) {data = null;}
 //myPopup = window.open('', "Zweitfenster", "width=300,height=400,left=100,top=200"); 
 //myPopup.document.write('<body class="grey"><div>Artikel mit Barcode '+barcode+' endgültig löschen</div></body'); 
 msg = "";
@@ -428,6 +429,7 @@ if (returnDateCompareString > todayDate) {
 	}
 
 }
+
 
 /**
 * adding scanned item id to GET string

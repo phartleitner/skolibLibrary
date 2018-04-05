@@ -33,7 +33,8 @@ function createItemInfoView(dataArr) {
 */
 
 
-function performCustomAction(barcode,action,data = null) {
+function performCustomAction(barcode,action,data) {
+if (data === undefined) {data = null;}
 if (action == 1) {
 	//DELETE
 	$('#itemInfo').hide();

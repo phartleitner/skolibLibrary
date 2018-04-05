@@ -121,7 +121,8 @@ function showDetails(x) {
 * @param action
 * @param data (used only in editing mode - containing the data to be updated)
 */
-function performCustomAction(barcode,action,data = null) {
+function performCustomAction(barcode,action,data) {
+if(data === undefined) {data = null;}
 if (action == 1) {
 	//DELETE
 	$('#itemInfo').hide();

@@ -107,7 +107,7 @@ var showDueState = false;
 var showNoticeState = false;
 var showFavState = false;
 function showDues() {
-	if(!this.showDueState) {
+	if(this.showDueState == false) {
 	$('#duelist').show();
 	$('#duesNav').html("keyboard_arrow_up");
 		this.showDueState = true;
@@ -121,7 +121,7 @@ function showDues() {
 }
 
 function showOverDues() {
-	if(!this.showNoticeState) {
+	if(this.showNoticeState == false) {
 	$('#overduelist').show();
 	$('#overduesNav').html("keyboard_arrow_up");
 		this.showNoticeState = true;
@@ -136,18 +136,19 @@ function showOverDues() {
 
 
 function showFavs() {
-	if(!showFavState) {
+	if(this.showFavState == false) {
 	$('#favTitles').show();
-	showFavState = true;
+	this.showFavState = true;
 	$('#favNav').html('keyboard_arrow_up');
 	} else {
 	$('#favTitles').hide();
-	showFavState = false;
+	this.showFavState = false;
 	$('#favNav').html('keyboard_arrow_down');	
 	}
 }
 
-function MM_openBrWindow(theURL,winName,features,select = null) { //v2.0
+function MM_openBrWindow(theURL,winName,features,select) { //v2.0
+if(select === undefined) {select = null;}
 if (select) {
 	theURL += "&group="+$('#grps').val();
 	}

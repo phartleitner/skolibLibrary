@@ -13,8 +13,11 @@ var currentItem = [];
 /**
 * show details of an item
 */
-function showItemInfoHTML(data = null  ,headline = null ,isScan = false) {
-	serie = false;
+function showItemInfoHTML(data ,headline,isScan) {
+if (data === undefined) {data = null;}	
+if (headline === undefined) {headline = null;}
+if (isScan === undefined) {isScan = false;}
+serie = false;
 	$('#customeraccount').hide();
 	$('#itemInfo').show();
 	if (null != data) {currentItem = data;}
@@ -132,7 +135,8 @@ function showItemInfoHTML(data = null  ,headline = null ,isScan = false) {
 * confirm an action like delete
 * @param int
 */
-function confirmAction(action, serie = false) {
+function confirmAction(action, serie) {
+	if (serie === undefined) {serie = false;}
 	if (action == 1) {
 	//DELETE
 	confText = '<span><b>Titel entfernen?</b> ';
@@ -165,13 +169,14 @@ function confFire(action){
 * display the edit Window
 * @param currentItem
 */
-function showEditView(serie = false) {
+function showEditView(serie) {
+	if(serie === undefined) {serie = false;}
 	this.serie = serie;
 	//Enable all fields 
 	$('input').prop('disabled', false);
 	$('select').prop('disabled', false);
 	//Disable fields relevant for signature
-	if (null != currentItem['ineditable']) {
+	if (null != this.currentItem['ineditable']) {
 	currentItem['ineditable'].forEach(function(element) {
 	$('[id*="'+element+'"]').prop('disabled', true);
 	});

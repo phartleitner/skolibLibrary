@@ -80,7 +80,8 @@ $groups = $data['groups'];
 
 </div>
 <script type="application/javascript">
-function MM_openBrWindow(theURL,winName,features,select = null) { //v2.0
+function MM_openBrWindow(theURL,winName,features,select) { //v2.0
+if (select === undefined) {select = false;}
 if (select) {
 	theURL += "&group="+$('#grps').val();
 	}

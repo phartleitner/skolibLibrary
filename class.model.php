@@ -824,7 +824,7 @@ class Model {
 	* @return int
 	*/
 	public function getCustomerPrefix() {
-		$data = $this->connection->selectValues('SELECT value FROM skolib_library_defaults WHERE category = "userprefix" ');
+		$data = $this->connection->selectValues('SELECT value FROM skolib_library_defaults WHERE category = "customerprefix" ');
 		if($data) {
 			return	$data[0][0];
 			}
@@ -1834,6 +1834,55 @@ class Model {
 	public function updateSetupField($id,$value,$field) {
 		$this->connection->straightQuery('UPDATE skolib_library_defaults SET '.$field.'="'.$value.'" WHERE id='.$id);
 	}
+	
+	/**
+	* check database for double barcodes
+	* @return array
+	*/
+	public function checkDatabaseForDoubles(){
+		$doubles = null;
+		$data = $this->connection->selectValues("SELECT barcode, COUNT(barcode) AS NumOccurrences
+		FROM skolib_titel
+		GROUP BY barcode
+		HAVING ( COUNT(barcode) > 1 )");
+		if ($data) {
+			foreach ($data as $d) {
+				$doubleData = $this->connection->selectValues('SELECT tNr FROM skolib_titel 
+				WHERE barcode ="'. $d[0].'"');
+				if ($doubleData) {
+					$doubleArray = array();
+					foreach($doubleData as $dd) {
+						$item = new LibraryItem();
+						$item->constructFromId( $dd[0] );
+						$borrowedItems[] = $item->getDetailArrayForJson();
+						$doubleArray[] = array("item"=>$item->getDetailArrayForJson());
+						}				
+					}
+					$doubles[] = array("barcode"=>$d[0],"doubles"=>$doubleArray);	
+				}
+		}
+		return $doubles;
+	}
+	
+	/**
+	* check if a barcode has duplicate entry
+	* @param string
+	* @return bool
+	*/
+	public function checkBarcodeForDoubles($barcode){
+		$data = $this->connection->selectValues('SELECT tNr FROM skolib_titel WHERE barcode = "'.$barcode.'"'); 
+		if ($data) {
+			if (count($data) > 1) {
+				return true;
+				} else {
+				return false;
+				}
+			} else {
+			return false;
+			}
+	}
+	
+	
 	
 	
 	}

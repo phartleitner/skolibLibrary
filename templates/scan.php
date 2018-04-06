@@ -47,6 +47,7 @@ $ukat2Data = $data['fields'][array_search('ukat2',array_column($data['fields'],'
 <script type="application/javascript">
 $(document).ready(function() {
 seriesLibrary = <?php if (isset($data['serieslib'])) {echo json_encode($data['serieslib']);} else {echo "null";} ?>;
+customerPrefix = <?php echo $data['customerPrefix']; ?>;
 });
 </script>
 

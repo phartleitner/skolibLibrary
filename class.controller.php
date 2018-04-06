@@ -271,9 +271,10 @@ class Controller {
 				$template = "usermgt";
 				break;
 			case "barc":
-				$this->infoToView['title'] = "Barcodes drucken";
+				echo "deleted function";die;
+				/*$this->infoToView['title'] = "Barcodes drucken";
 				$this->infoToView['navarea'] = "barcodes";
-				$template = "simple_menue";	
+				$template = "simple_menue";	*/
 				break;
 			case "bookbarc":
 				//barcode print
@@ -428,6 +429,7 @@ class Controller {
 				$this->infoToView['scantype']['value'] = "Ausleihe";
 				$this->setFieldValues();
 				$library = new Library();
+				$this->infoToView['customerPrefix'] = $library->getCustomerPrefix();
 				$seriesLibraryType = $library->getLibraryType();
 				$this->infoToView['serieslib'] = ($seriesLibraryType) ? true : false;				
 				$template = "scan";
@@ -437,6 +439,7 @@ class Controller {
 				$this->infoToView['scantype']['value'] = "InfoScan";
 				$this->setFieldValues();	
 				$library = new Library();
+				$this->infoToView['customerPrefix'] = $library->getCustomerPrefix();
 				$seriesLibraryType = $library->getLibraryType();
 				$this->infoToView['serieslib'] = ($seriesLibraryType) ? true : false;		
 				$template = "scan";
@@ -446,20 +449,37 @@ class Controller {
 				$this->infoToView['scantype']['value'] = "Rückgabe";
 				$this->setFieldValues();
 				$library = new Library();
+				$this->infoToView['customerPrefix'] = $library->getCustomerPrefix();
 				$seriesLibraryType = $library->getLibraryType();
 				$this->infoToView['serieslib'] = ($seriesLibraryType) ? true : false;		
 				$template = "scan";
 				break;
+				
+			case "dblchk":
+				$this->setFieldValues();
+				$this->infoToView['header'] = "Doublettenprüfung der Datenbank";
+				$library = new Library();
+				$seriesLibraryType = $library->getLibraryType();
+				$this->infoToView['serieslib'] = ($seriesLibraryType) ? true : false;
+				$doubles = $library->checkDatabaseForDoubles();
+				$status = (isset($doubles)) ? "success" : "keine Doubletten vorhanden";
+				$this->infoToView['doubleitems'] =	json_encode(array("status" => $status, "items" => $doubles));
+				/*header("Content-type: application/json; charset=utf-8");
+				echo json_encode(array("status" => $status, "items" => $doubles),JSON_PRETTY_PRINT); die;
+				echo json_encode($this->infoToView['doubleitems'],JSON_PRETTY_PRINT);die;*/
+				$template = "doubleitems";
+				break;
 			case "scan":
 				//action is called through javascript function and will return JSON object
 				$library = new Library();
+				$customerPrefix = $library->getCustomerPrefix();
 				$seriesLibraryType = $library->getLibraryType();
 				$this->infoToView['serieslib'] = ($seriesLibraryType) ? true : false;
 				$scanMode = $this->input['mode'];
 				$result = array();
 				$jsonReturn = array();
 				$barcode_init = substr($this->input['input'],0,2);
-				if($barcode_init == "10" ){
+				if($barcode_init == $customerPrefix ){
 					//Customer scanned
 					if ($scanMode == 2) {
 					//returning mode
@@ -760,6 +780,8 @@ class Controller {
 	$libraryItemExists = ($libraryItem->constructFromBarcode($data['input'])) ? true : false;
 	if ($libraryItemExists) {
 		$libraryItemOut = $libraryItem->getItemStatus();
+		$libraryItemDouble = $libraryItem->checkForDoubles();
+		if ($libraryItemDouble) {return $this->getReturnData("error",410,111);}
 		}
 	if ($scanMode == 0){
 		//borrowing mode
@@ -786,7 +808,7 @@ class Controller {
 					//$returnStatus = array("key"=>"error","value"=> "Artikel nicht verfügbar! Neues Buch scannen!","code"=>"406","order"=>"111");
 					//$returnData["return"] = $returnStatus;						
 					}
-				} else {
+				}  else 	{
 				//item doesn't exist
 				$returnData = $this->getReturnData("error",405,111);
 				//$returnData["return"] = array("key"=>"error","value"=>"Barcode ist keinem Buch zugeordnet!","code"=>"405","order"=>"111");
@@ -837,7 +859,7 @@ class Controller {
 			//$returnData["return"] = array("key"=>"error","value"=>"Barcode ist keinem Buch zugeordnet!","code"=>"405","order"=>"100");	
 			}			
 		}
-		else {
+		elseif ($scanMode == 2){
 		//returning mode
 		//create item and return
 		if ($libraryItemExists) {
@@ -857,7 +879,7 @@ class Controller {
 			$returnData = $this->getReturnData("error",405,100);
 			//$returnData["return"] = array("key"=>"error","value"=>"Barcode ist keinem Buch zugeordnet!","code"=>"405","order"=>"100");	
 			}
-		}
+		} 
 	unset($libraryItem);
 	return $returnData;
 	}

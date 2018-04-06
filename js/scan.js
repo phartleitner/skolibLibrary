@@ -14,6 +14,7 @@ var customer ; // barcode representing customer, only once during one scanning p
 var itemInfoStatusColor; //color for infoBox - can change 
 var GETStringAdd = ''; //string adding info to finalize scan
 var GETCustomActionAdd = ''; //info for extra actions in console mode
+var customerPrefix = '';
 
 $(document).ready(function(){
 	scanMode = $('#scanmode').val();
@@ -28,6 +29,7 @@ $(document).ready(function(){
 */
 $(document).keypress(function(e){
 	if(e.which == 13) {
+		//console.info(customerPrefix);
 		$('#warning').html('');
 		$('#favourites').remove();
 		$('#stock-details').hide();	
@@ -38,9 +40,7 @@ $(document).keypress(function(e){
 			    input = $('#scan').val();
 				$('#scan').val('');
 				inputString = String(input);
-				//console.info("Barcode: "+inputString);
-				//console.info("BarcodePrefix"+inputString.substring(0,2));
-				if (inputString.substring(0,2) == "10"  && scanMode == 2) {
+				if (parseInt(inputString.substring(0,2),10) == customerPrefix  && parseInt(scanMode,10) == 2) {
 				message["key"] = "error";
 				message["code"] = 405;
 				throwWarning(message, true);				
@@ -84,8 +84,9 @@ var result = $.parseJSON(jsob);
 //console.info("JS array:"+result);
 //console.info(typeof(result));
 if (scanMode == 0) {
+	//console.info(barcodeBuffer);
 	inputString = String(input);
-	if (inputString.substring(0,2) != "10" ) {
+	if (parseInt(inputString.substring(0,2),10) != customerPrefix ) {
 		//avoids customers being put into the barcode buffer list
 		barcodeBuffer.push(input);
 		}
@@ -122,7 +123,7 @@ switch(result['return']['order']){
 	if(result['item']) {
 		createItemInfoView(result);
 		}
-	if(scanMode == 0){
+	if(scanMode == 0 && result['item']){
 		//waiting for next item or customer scan
 		if (result['item']['status']['statuscode'] == "1"){
 		itemBuffer.push(result);
@@ -228,6 +229,9 @@ switch(code) {
 	case 409:
 		statusText = "identischer Scan bereits erfolgt!";
 		break;
+	case 410:
+		statusText = "Barcode mehrfach vorhanden! Führen Sie eine Doublettenprüfung durch!";
+		break;
 	default:
 		statusText = "";
 		break;
@@ -299,7 +303,7 @@ function createItemInfoView(dataArr) {
 * @param array items
 */
 function createCustomerAccountList(customer,items) {
-	console.info("Lib:"+seriesLibrary);
+	//console.info("Lib:"+seriesLibrary);
 var color;
 var content = '<div ><h5 class="orange-text">Kontoübersicht für '
 +customer['vorname']+' '
@@ -314,7 +318,7 @@ for (var i=0;i<items.length;i++){
 		content += ' [Barcode: '+ items[i]['barcode']['value']+']';
 		if (items[i]['faellig']['value'] != null) {
 			if (seriesLibrary == false) {
-				console.info(items[i]);
+				//console.info(items[i]);
 			if( compareDate(items[i]['faellig']['value']['due']) ) {
 				color = "green-text";	
 				} else {

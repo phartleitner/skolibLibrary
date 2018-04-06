@@ -532,6 +532,15 @@ public function makeBarcode() {
 		$this->barcode = $padding > 0 ? str_pad($barcode1,$padding,"0",STR_PAD_RIGHT).$barcode2 : $barcode1.$barcode2;
 		}	
 	
+
+/**
+* check if a barcode is doubledash
+* @return bool
+*/
+public function checkForDoubles() {
+	return Model::getInstance()->checkBarcodeForDoubles($this->barcode);
+}
+
 	
 }
 

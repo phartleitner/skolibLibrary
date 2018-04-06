@@ -242,6 +242,14 @@ public function getSetupData(){
 return Model::getInstance()->getLibraryDefaultSetups();	
 }
 
+/**
+* check database for double barcodes
+* @return array
+*/
+public function checkDatabaseForDoubles(){
+	return Model::getInstance()->checkDatabaseForDoubles();
+}
+
 	
 }
 

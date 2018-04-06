@@ -17,9 +17,30 @@ xhttp.open("POST", destination, true);
 xhttp.send();
 }
 
-function showList(){
-$('#search-results').html(printResults(items));
-$('#search-result-container').show();	
+function showDoublesList(){
+	
+	htmlCont = "";
+	for (i=0; i < items.length; i++) {
+		//console.info(items[i]);
+		htmlCont += '<div class="card-title ">Doubletten für Barcode: ' + items[i]['barcode'] + '</div>';
+		htmlCont += '<div class="card-content">';
+		for (j=0; j< items[i]['doubles'].length ; j++ ) {
+			//console.info(items[i]['doubles'][j]['item']['titel']);
+			
+			htmlCont += '<div class="row">' + 
+				'<div> <b>Titel:</b> ' + items[i]['doubles'][j]['item']['titel']['value'] + '</div>'+
+				'<div> <b>Autor:</b> ' + items[i]['doubles'][j]['item']['autor']['value'] + '</div>'+
+				'<div> <b>Barcode:</b> ' + items[i]['doubles'][j]['item']['barcode']['value'] + '</div>'+
+				'<div> <b>im Bestand seit:</b> ' + items[i]['doubles'][j]['item']['erfasst']['value'] + '</div>' +
+				'</div>';
+			
+			
+		}
+			htmlCont += '</div>';
+	}
+	                                                    
+$('#doubles-results').html(htmlCont);
+$('#doubles-result-container').show();	
 }
 
 

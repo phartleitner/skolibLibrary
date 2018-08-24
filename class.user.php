@@ -319,8 +319,8 @@ public function getBorrowersAccountDataForJSON(){
 * get Titles to be reminded of
 * @return array
 */
-public function getTitlesToRemind(){
-	return Model::getInstance()->getTitlesToRemind($this->id);
+public function getTitlesToRemind($repeat = false){
+	return Model::getInstance()->getTitlesToRemind($this->id,$repeat);
 }
 
 }

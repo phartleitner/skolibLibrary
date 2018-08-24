@@ -7,7 +7,7 @@
 
 
 //Book file to database
-$fh = fopen("./import/importkorrU8.csv","r");
+$fh = fopen("./import/importhistorybooksUTF8.csv","r");
 
 $header = fgets($fh);
 $headerArr = explode(";",$header);
@@ -20,7 +20,7 @@ $lineArr = explode(";",$line);
 
 //create a LibraryItem
 $item = new LibraryItem();
-$item->constructFromDataEntry($lineArr[0],$lineArr[2],$lineArr[3],$lineArr[4],$lineArr[5],'29',null,null,$library);
+$item->constructFromDataEntry($lineArr[3],$lineArr[4],$lineArr[0],$lineArr[1],$lineArr[2],'29',$lineArr[6],$lineArr[7],$library);
 
 
 

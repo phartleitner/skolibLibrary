@@ -33,7 +33,7 @@ ukat2 = $('#ukat2 option:selected').val();
 
 
 
-if(!titel && !autor && !hkat && !ukat1 && !ukat2 && !swort  && !mtyp) {
+if(!titel && !autor && !hkat && !ukat1 && !ukat2 && !swort  && !mtyp && !zusatz) {
 	throwMessage("Bitte mindestens ein Suchkriterium angeben");
 	
 }else {
@@ -51,7 +51,7 @@ if (ukat1) {
 searchFor.push(["ukat1",ukat1]);
 }
 if (ukat2) {
-searchFor.push(["ukat1",ukat2]);
+searchFor.push(["ukat2",ukat2]);
 }
 if (mtyp) {
 searchFor.push(["mtyp",mtyp]);

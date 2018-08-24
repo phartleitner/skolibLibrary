@@ -119,10 +119,7 @@ switch(result['return']['order']){
 	case 100:
 	//item scanned, no customer prior to that
 	throwWarning(result['return']);
-	//show item data
-	if(result['item']) {
-		createItemInfoView(result);
-		}
+	
 	if(scanMode == 0 && result['item']){
 		//waiting for next item or customer scan
 		if (result['item']['status']['statuscode'] == "1"){
@@ -135,8 +132,16 @@ switch(result['return']['order']){
 		if (itemBuffer.length > 0 ) {
 			createItemList();
 			}
-		} else if (scanMode == 2){
+		} else if (scanMode == 1) {
+		//info scan
+		//showItemData
+		if(result['item']) {
+			createItemInfoView(result);
+			}
+		}else if (scanMode == 2){
 		//returning transaction terminated
+		createCustomerAccountList(result['currentBorrower'],result['currentBorrower']['items'],scanMode);
+		createItemInfoView(result);
 		finalizeProcess();
 		} 
 	break;
@@ -302,8 +307,12 @@ function createItemInfoView(dataArr) {
 * @param array customer
 * @param array items
 */
-function createCustomerAccountList(customer,items) {
+function createCustomerAccountList(customer,items,scanMode) {
 	//console.info("Lib:"+seriesLibrary);
+if (scanMode === undefined) {
+	scanMode = null;
+}
+//console.info(scanMode);
 var color;
 var content = '<div ><h5 class="orange-text">Kontoübersicht für '
 +customer['vorname']+' '
@@ -327,7 +336,15 @@ for (var i=0;i<items.length;i++){
 			} else {
 			color= "red-text";		
 			}
-			content += '<a class="'+color+'">&nbsp; zurück bis: '+items[i]['faellig']['value']['due']+'</a>';	
+			if (null != items[i]['faellig']['value']['due']) {
+			content += '<a class="'+color+'">&nbsp; zurück bis: '+items[i]['faellig']['value']['due']+'</a>';
+			}
+			if (scanMode != 2) {
+				content += '<span><a class="right" href="#" onClick="confirmDeleteAction(' + items[i]['barcode']['value'] + ')" title="löschen">' 
+				+'<b><i class="material-icons grey-text">delete</i></a></b>'
+				+'<a  class="right" href="#" onClick="performCustomAction('+items[i]['barcode']['value']+',2)" title="zurückgeben"><i class="material-icons grey-text">keyboard_return</i></a>'
+				+'</span><div id="' + items[i]['barcode']['value'] + '" class="red-text"></div>';
+				}		
 			}
 		
 		content += '</td>';
@@ -335,7 +352,7 @@ for (var i=0;i<items.length;i++){
 		if (scanMode == 1) {
 		content += '<td>'
 		if  (seriesLibrary == false) {
-			content += '<span><a class="right" href="#" onClick="performCustomAction('+items[i]['barcode']['value']+',6)" title="verlängern">'
+			content += '<span><a class="right" href="#" onClick="performCustomAction('+items[i]['barcode']['value']+',1)" title="verlängern">'
 			+'<b><i class="material-icons grey-text">low_priority</i></a></b></span>';	
 		}
 		
@@ -350,11 +367,48 @@ else {
 content += '<h6>keine Ausleihen</h6>';	
 }
 content +'</div>';
+if (null != scanMode) {
+$('#returnaccount').html(content);
+$('#returnaccount').show();	
+} else {
 $('#customeraccount').html(content);
 $('#customeraccount').show();
+}
 $('#item-info').hide();
 $('#item-history').hide();
 //WATCH OUT itemInfo div is now working differently			
+}
+
+
+/**
+* confirm deletion in customer account view
+* @param int
+*/
+function confirmDeleteAction(barcode) {
+	confText = '<span><b>wirklich löschen?</b> ';
+	confText += '<a href="#" onClick="delFire('+barcode+')" class="btn-flat right waves-effect waves-red right">OK</a> '; 
+	confText += '<a href="#" onClick="hideConfMess('+barcode+')" class="btn-flat right waves-effect waves-red right">Abbrechen</a></span> ';
+	$("#"+barcode).html(confText);
+	$("#"+barcode).show();
+	//'+performCustomAction(currentItem['barcode']['value'] ,action)+'
+	//performCustomAction(currentItem['barcode']['value'] ,1);
+}
+
+/**
+*hide confirmation message
+* @param barcode
+*/
+function hideConfMess(barcode) {
+$("#"+barcode).hide();	
+}
+
+/**
+* fire delete Action
+* @param barcode
+*/
+function delFire(barcode){
+	hideConfMess(barcode);
+	performCustomAction(barcode,1,null);
 }
 
 /**

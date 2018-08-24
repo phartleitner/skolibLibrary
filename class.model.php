@@ -1318,6 +1318,33 @@ class Model {
 	}
 	
 	/**
+	* detect borrowed items and borrowing customer to create csv File
+	* @return array
+	*/
+	public function getBorrowedItemsForCSV(){
+	$borrowedItems = array();
+	$data = $this->connection->selectValues("SELECT titel,barcode,frist,SName,SRufname,KName
+	FROM skolib_ausleihe,skolib_titel,skolib_customer 
+	WHERE rueck = 0
+	AND skolib_ausleihe.tNr = skolib_titel.tNr
+	AND skolib_customer.SNr = skolib_ausleihe.SNr
+	ORDER BY KName,SName,SRufname");
+	if($data) {
+		foreach ($data as $d) {
+		$borrowedItems[] = array(
+		"form"=>$d[5],
+		"sn"=>$d[3],
+		"gn"=>$d[4],
+		"title"=>$d[0],
+		"barcode"=>$d[1],
+		"faellig"=>$this->makeProperDate($d[2]));
+		
+		}
+	}
+	return $borrowedItems;		
+	}
+	
+	/**
 	* borrowed items amount
 	* @return int
 	*/
@@ -1375,13 +1402,14 @@ class Model {
 	* get titles to be reminded of per customer
 	* @return array
 	*/
-	public function getTitlesToRemind($customerId){
+	public function getTitlesToRemind($customerId, $repeat=false){
 		$titles = array();
 		$today = date('Ymd');
+		$mahnArgument = ($repeat) ? " AND mahn > 0 " : " AND mahn = 0 ";
 		$data = $this->connection->selectValues("SELECT aNr,tNr FROM skolib_ausleihe 
 			WHERE rueck <= $today 
 			AND rueck = 0
-			AND mahn = 0 
+			$mahnArgument
 			AND SNr = $customerId ORDER BY rueck");
 		if($data) {
 			foreach($data as $d) {
@@ -1394,6 +1422,9 @@ class Model {
 		}
 		return $titles;	
 	}
+	
+	
+		
 	
 	/**
 	* enter date of reminder notice into DB

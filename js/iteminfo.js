@@ -30,7 +30,7 @@ serie = false;
 		itemInfoStatusColorInverse = "red";				
 		}
 	$('#item-edit-details').hide();	
-	$('#header').html(header);
+	$('#header-cell').html(header);
 	customAction = "";
 	if (scanMode == "0") {} else {
 	customAction = '<a href="#" onClick="confirmAction(1)" title="löschen"><i class="material-icons black-text">delete</i></a>';
@@ -41,8 +41,8 @@ serie = false;
 	if (seriesLibrary ==  true) {
 		customAction += '<a href="#" onClick="showEditView(true)" title="Serie bearbeiten"><i class="material-icons grey-text">border_color</i></a>';
 		}
+	$('#custom-action-cell').html(customAction);
 	
-	$('#custom-action').html(customAction);
 	}
 	
 	//add dteails of current selection

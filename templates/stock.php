@@ -77,7 +77,7 @@ foreach($data['dashboard']['warnedItems'] as $item) {
 	$itemBorrower->setCustomerData();
 	$overdueNotices[] = array("id" => $item->getId(),"titel" => $itemDetails['titel'],
 		"autor" => $itemDetails['autor'], "signatur" => $itemDetails['signatur'],
-		"due" => Model::getInstance()->makeProperDate($itemDueDetails['due']),"customer" => $itemBorrower->getFullName().'('.$itemBorrower->getForm().')');	
+		"due" => Model::getInstance()->makeProperDate($itemDueDetails['due']),"customer" => $itemBorrower->getFullName().'('.$itemBorrower->getForm().')',"customerId"=>$itemBorrower->getId());	
 	}	
 ?>
 <div class = "card-panel red-text">
@@ -93,6 +93,7 @@ foreach($data['dashboard']['warnedItems'] as $item) {
 	<td><b><?php echo $item['titel']; ?></b>(<?php echo $item['autor']; ?>)</td>
 	<td><b>Entleiher:</b> <?php echo $item['customer']; ?></td>
 	<td><b>fällig:</b> <?php echo $item['due']; ?></td>
+	<td><a href="#" onClick="MM_openBrWindow('./index.php?type=reminder&rpt=<?php echo $item['customerId']; ?>','','width=600,height=600,resizable=yes' )"><i class="material-icons right grey-text">print</i> </a></td>
 
 </tr>	
 <?php } ?>

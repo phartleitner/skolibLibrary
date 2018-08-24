@@ -1,9 +1,8 @@
 <div id="item-info" class="card-panel grey lighten-2" style="display:none">
 <div id="confirmation" class="card-panel red lighten-2" style="display:none"></div>
 <h5 class="grey-text">
-	<span id="header"></span>
-	<span id="custom-action" class="right">
-	</span>	
+	<span id="header-cell"></span>
+	<span id="custom-action-cell" class="right"></span>	
 </h5>
 <table  border="0" cell-padding="0" cell-spacing="0">
 	<tr>
@@ -46,4 +45,6 @@
 <div class="card-panel white" id="item-history" style="display:none">
 <div class="card-content" id="history-content"></div>
 </div>
+
+
 		

@@ -143,8 +143,12 @@ function deleteUser(id){
 	sendRequest(id,"delete");
 }
 
-function sendRequest(id,mode,name = null, vorname = null, login = null, pass = null) {
-	console.info("id: "+id+" -- mode: "+mode);
+function sendRequest(id,mode,name, vorname, login, pass) {
+	if (name === undefined) {name = null;}
+	if (vorname === undefined) { vorname = null;}
+	if (login === undefined) {login = null;}
+	if (pass === undefined) {pass = null;} 
+	//console.info("id: "+id+" -- mode: "+mode);
 	if(mode == "add") {
 			 	xhttp.open("POST", "?type=users&add=true&name="+name+"&vorname="
 				+vorname+"&login="+login+"&pass="+pass, true);
@@ -169,11 +173,12 @@ function sendRequest(id,mode,name = null, vorname = null, login = null, pass = n
 }
 
 function showAddUserWindow(show){
-	if(show) {
+	if(show == true) {
 		$('#adduser').show();
 	} else {
 		$('#adduser').hide();
-	}	
+	}
+	
 }
 
 

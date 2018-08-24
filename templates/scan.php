@@ -12,6 +12,7 @@ $ukat2Data = $data['fields'][array_search('ukat2',array_column($data['fields'],'
 
 <?php include("header.php");?>
 
+
 <script src="https://code.jquery.com/jquery-2.2.4.min.js"
         integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous">	
 </script>
@@ -30,6 +31,7 @@ $ukat2Data = $data['fields'][array_search('ukat2',array_column($data['fields'],'
 		  <input id="scan" type="text" class="" autofocus required />
 		  <p id="warning"><br></p>
 		  <div id="list"> </div>
+		  <?php include("customeraccount2.php"); ?>
 		  </div>
 	
 	<?php if (isset($data['dashboard']['favourites']) ) {include("favourites.php");}?>
@@ -47,7 +49,7 @@ $ukat2Data = $data['fields'][array_search('ukat2',array_column($data['fields'],'
 <script type="application/javascript">
 $(document).ready(function() {
 seriesLibrary = <?php if (isset($data['serieslib'])) {echo json_encode($data['serieslib']);} else {echo "null";} ?>;
-customerPrefix = <?php echo $data['customerPrefix']; ?>;
+customerPrefix = <?php if (isset($data['customerPrefix'])) {echo $data['customerPrefix'];} else {echo "null";} ?>;
 });
 </script>
 

@@ -4,12 +4,12 @@
 ****************************************************************/
 $data = $this->getDataForView(); 
 $toRemind = $data['toremind'];
-
 $hinweistext = mb_convert_encoding("Laut Kartei hast du das folgende Buch / die folgende CD ausgeliehen:",'UTF-8');
 $aufforderung1 = mb_convert_encoding("Offenbar hast du  vergessen, es rechtzeitig  zurückzugeben oder zu verlängern.",'UTF-8');
 $aufforderung2 = mb_convert_encoding("Bitte hol dies in den nächsten Tagen nach! Danke!",'UTF-8');
-//Mahnung ist gedruckt markieren
+$repeatedText = (isset($data['repeatedReminder'])) ? "wiederholte Erinnerung!": null;
 
+//Mahnung ist gedruckt markieren
 
 
 /*
@@ -98,7 +98,7 @@ foreach ($toRemind as $reminder){
 	$textposv=$textposv-(2*$lineheight);
 	$textposh=$start;
 	$param["height"] = 14;
-	$pdf->draw_text($textposh, $textposv,"Leihfristhinweis für: ".$reminder['customer']->getFullName() , $page, $param);
+	$pdf->draw_text($textposh, $textposv,"Leihfristhinweis für: ".$reminder['customer']->getFullName()." (".$reminder['customer']->getForm().")" , $page, $param);
 	$textposv=$textposv-(2*$lineheight);
 	$param["height"] = 13;
 	$pdf->draw_text($textposh, $textposv, $hinweistext , $page, $param);
@@ -113,6 +113,12 @@ foreach ($toRemind as $reminder){
 		 $pdf->draw_text($textposh+410, $textposv, "fällig: ".$item['item']->getItemStatus()['duedate'] , $page, $param);
 		 $textposv=$textposv-$lineheight;
         }
+	if (isset($repeatedText) ) {
+	$param["font"] = "Helvetica-Bold";	
+	$param["height"] = 14;
+	$textposv=$textposv-$lineheight;
+	$pdf->draw_text($textposh, $textposv,$repeatedText , $page, $param);
+	}
 	$param["font"] = "Helvetica";
 	$textposv=$textposv-(3*$lineheight);
 	$param["height"] = 14;

@@ -122,7 +122,6 @@ class Controller {
 				$libraryItem = new LibraryItem();
 				$libraryItem->constructFromBarcode($this->input['custom']);
 				$libraryItem->deleteItem();
-				die;
 				break;
 			case "2":
 				//return item
@@ -395,8 +394,16 @@ class Controller {
 				$template = ($printSignature) ? "pdf_printbclist_signatures" : "pdf_printbclist";
 				break;
 			case "reminder":
-				//print reminder notices
+				if (isset($this->input['rpt']) ) {
+				//print individual reminder again
+				$customer = new Customer($this->input['rpt']);
+				$customer->setCustomerData();
+				$this->infoToView['repeatedReminder'] = true;
+				$this->infoToView['toremind'] = array(array("customer" => $customer, "items" => $customer->getTitlesToRemind(true) ));
+				} else {				
+				//print all reminder notices
 				$this->infoToView['toremind'] = Model::getInstance()->getReminderData();
+				}
 				$template = "pdf_reminder";
 				break;
 			case "admin":
@@ -411,6 +418,7 @@ class Controller {
 				$library = new Library();
 				$seriesLibraryType = $library->getLibraryType();
 				$this->infoToView['serieslib'] = ($seriesLibraryType) ? true : false;
+				
 				if(isset($this->input['do']) ) {
 					$borrowedItems = Model::getInstance()->getAllBorrowedItemsBasic();
 					$status = ($borrowedItems == true) ? "success" : "keine Titel entliehen";
@@ -421,8 +429,15 @@ class Controller {
 					$status = ($borrowedItems == true) ? "success" : "keine Titel entliehen";
 					$this->infoToView['borrowedItems'] = json_encode(array("status" => $status, "items" => $borrowedItems));
 					}
+				
 				$this->infoToView['header'] = "entliehene Titel";
 				$template = "borrowedtitles";	
+				break;
+			case "csv":
+				$library = new Library();
+				$this->infoToView['borrowedCSV'] = $library->createBorrowedItemsCSV();
+				$this->infoToView['header'] = "entliehene Titel - CSV Download";
+				$template = "csvdwnld";
 				break;
 			case "out":
 				$this->infoToView['scantype']['key'] = 0;
@@ -840,9 +855,10 @@ class Controller {
 		} else if ($scanMode == 1) {
 		//info mode
 		if ($libraryItemExists) {
+			
 			if ($libraryItemOut) {
 				$borrowingCustomer = $libraryItemOut['customer'];
-				$borrowingCustomer->setCustomerData();
+			    $borrowingCustomer->setCustomerData();
 				$statusString = "verliehen an ".$borrowingCustomer->getFullName().' ('.$borrowingCustomer->getForm().')'; 
 				$statusCode = "0";	
 				} else {
@@ -868,9 +884,30 @@ class Controller {
 			$returnData = $this->getReturnData("value",403,100);
 			//$returnData['return'] = array("key"=>"value","value"=> "Artikel ist nicht verliehen!","code"=>"403","order"=>"100");	
 			} else {
-			$returnData = $this->getReturnData("success",203,100);
-			//$returnData['return'] = array("key"=>"success","value"=> "Artikel zurückgegeben!","code"=>"203","order"=>"100");
 			$libraryItem->returnItem();	
+			$borrowingCustomer = $libraryItemOut['customer'];
+			$borrowingCustomer->setCustomerData();
+			$returnData = $this->getReturnData("success",203,100);
+			//new
+			
+			if ($borrowingCustomer->getBorrowersAccountDataForJSON()) {
+			//customer's account not empty;
+			$items = $borrowingCustomer->getBorrowersAccountDataForJSON();
+			} else {
+			//customer's account IS empty
+			$items = null;
+			}
+			$returnData["currentBorrower"] =array(
+			"id"=>$borrowingCustomer->getId(),
+			"barcode"=>$borrowingCustomer->getBarcode(),
+			"name"=>$borrowingCustomer->getSurname(),
+			"vorname"=>$borrowingCustomer->getName(),
+			"klasse"=>$borrowingCustomer->getForm(),
+			"items"=>$items);
+			// Irgendwie kommen die Daten des gescannten Buchs nicht sauber rüber -> faellig wird nicht gefunden!!!
+			//new End
+			//$returnData['return'] = array("key"=>"success","value"=> "Artikel zurückgegeben!","code"=>"203","order"=>"100");
+			
 			}
 			$returnData["item"] =  $libraryItem->getDetailArrayForJSON();
 			$returnData["item"]["status"] = array("key"=>"Status","value"=>"verfügbar","statuscode"=>"1");

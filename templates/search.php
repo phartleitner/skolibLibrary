@@ -68,7 +68,7 @@ $ukat2Data = $data['fields'][array_search('ukat2',array_column($data['fields'],'
 					</label>
 				</div>
 				<div class="select col l6 m6 s6" style="margin-top: 10px">
-					<label for="hkat">Medium
+					<label for="mtyp">Medium
 					<select class="browser-default" id="mtyp" name="mtyp" >
 					<option value="">Medium wählen</option>
 					<?php 
@@ -84,7 +84,7 @@ $ukat2Data = $data['fields'][array_search('ukat2',array_column($data['fields'],'
 			</div>
 			<div class="row">
 				<div class="select col l6 m6 s6" style="margin-top: 10px">
-					<label for="hkat">Unterkategorie1
+					<label for="ukat1">Unterkategorie1
 					<select class="browser-default" id="ukat1" name="ukat1" >
 					<option value="">Unterkategorie1 wählen</option>
 					<?php 
@@ -100,7 +100,7 @@ $ukat2Data = $data['fields'][array_search('ukat2',array_column($data['fields'],'
 				<div class="select col l6 m6 s6" style="margin-top: 10px">
 					<label for="ukat2">Unterkategorie2
 					<select class="browser-default" id="ukat2" name="ukat2" >
-					<option value="">Unterkategorie1 wählen</option>
+					<option value="">Unterkategorie2 wählen</option>
 					<?php 
 					foreach($data['dropdown'][ $ukat2Data['dwNr'] ] as $key => $value) {
 					?>

@@ -250,7 +250,31 @@ public function checkDatabaseForDoubles(){
 	return Model::getInstance()->checkDatabaseForDoubles();
 }
 
+
+
+/**
+* create a csv file with borrowed titles
+* @return string
+*/
+public function createBorrowedItemsCSV(){
+	$borrowedItems = Model::getInstance()->getBorrowedItemsForCSV();
 	
+	$fileName = $_SESSION['organisation']['database'].'/dwnld/borroweditems.csv';
+	
+	$fh = fopen($fileName,"w");
+	fwrite($fh,pack("CCC",0xef,0xbb,0xbf)); // ensures UTF-8 encoding
+	fwrite($fh,mb_convert_encoding("Klasse;Name;Vorname;Titel;Barcode;Fälligkeitsdatum\r\n",'UTF-8') );
+	foreach($borrowedItems as $b) {
+	$line = $b['form'] . ';' . $b['sn'] . ';' . $b['gn'] . ';' . $b['title'] . ';' . 
+	$b['barcode'] . ';' . $b['faellig'];
+	$line .= "\r\n";
+	fwrite($fh,mb_convert_encoding($line,'UTF-8') );
+	}
+	
+	
+	fclose($fh);
+	return $fileName;
+	}	
 }
 
 ?>

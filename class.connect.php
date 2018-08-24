@@ -92,8 +92,8 @@ class Connection {
 	*/
     public function getBasicCredentials() {
         $this->server = "localhost";
-		$this->user = "root";//"skolib_admin";
-		$this->pass = "";//"yorkislogan5";
+		$this->user = "root";
+		$this->pass = "";
 		$this->database = "skolib_basis" ;
 		//$this->download = trim($larr[1]);
 		//this->basepath = trim($larr[1]);
